@@ -8,6 +8,7 @@ export default function BalancePage() {
     const [history, setHistory] = useState(JSON.parse(localStorage.getItem("transactions")) || []);
     const [historyState, setHistoryState] = useState(false);
     const transaction = useRef();
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
     //logic
     const handleBalanceState = ()=>{
         setBalanceState(true);
@@ -38,7 +39,6 @@ export default function BalancePage() {
             transaction.current.value = "";
             toast.success("transaction success!");
             localStorage.setItem("balance", balance - transactionValue);
-
         }else{
             toast.error("insufficient balance!!");
             transaction.current.value = "";
@@ -51,6 +51,7 @@ export default function BalancePage() {
             position="top-center"
             reverseOrder={false}
             />
+            <h1>Hello , {currentUser.name}</h1>
             <div className="col-6 d-flex flex-column gap-5 justify-content-center align-items-center">
                 <h2>Your account Balance is : {balanceState ? balance : <FaEyeSlash onClick={handleBalanceState}/> }</h2>
                 <input type="text" placeholder="Enter amount" className="form-control " ref={transaction}/>
