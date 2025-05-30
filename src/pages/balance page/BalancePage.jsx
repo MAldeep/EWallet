@@ -3,9 +3,9 @@ import toast, { Toaster } from "react-hot-toast";
 import { FaEyeSlash } from "react-icons/fa";
 
 export default function BalancePage() {
-    const [balance,setBalance] = useState(0);
+    const [balance,setBalance] = useState(localStorage.getItem("balance") || 0);
     const [balanceState, setBalanceState] = useState(false);
-    const [history, setHistory] = useState([]);
+    const [history, setHistory] = useState(JSON.parse(localStorage.getItem("transactions")) || []);
     const [historyState, setHistoryState] = useState(false);
     const transaction = useRef();
     //logic
@@ -19,11 +19,13 @@ export default function BalancePage() {
         const transactionValue = +transaction.current.value;
         let depositObj = {bBalance : balance , amount : transactionValue , type : "Deposit" , aBalance : balance + transactionValue};
         let historyN = [...history];
-        setBalance(balance + transactionValue);
+        setBalance(+balance + transactionValue);
         historyN.push(depositObj);
         setHistory(historyN);
         transaction.current.value = "";
         toast.success('transaction success!');
+        localStorage.setItem("balance", balance + transactionValue);
+        localStorage.setItem("transactions", JSON.stringify(history) );
     }
     const handleWithdrawal = ()=>{
         const transactionValue = +transaction.current.value;
@@ -35,6 +37,8 @@ export default function BalancePage() {
             setHistory(historyN);
             transaction.current.value = "";
             toast.success("transaction success!");
+            localStorage.setItem("balance", balance - transactionValue);
+
         }else{
             toast.error("insufficient balance!!");
             transaction.current.value = "";
